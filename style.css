@@ -36,6 +36,14 @@ body {
     background-color: white;
     padding: 30px;
     border-radius: 10px;
+    height: 50%;
+    width: 50%;
+}
+
+#data {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .weather-number {
@@ -43,13 +51,12 @@ body {
 }
 
 #gif-container {
+    grid-column: 2 / 3;
     display:flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
 }
 
 #weather-gif {
-    grid-column: 2 / 3;
     border-radius: 10px;
 }

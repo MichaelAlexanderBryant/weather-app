@@ -1,4 +1,4 @@
-async function retrieveTemperature(location) {
+async function retrieveTemperature(location, units) {
     temperatureDiv.textContent = '';
     let locationUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=0fbedc6a540b7697b79efc90cc2a0673`
     let currentWeather = await fetch(locationUrl)
@@ -7,21 +7,28 @@ async function retrieveTemperature(location) {
 
     let currentTemperature = weatherJson["main"]["temp"];
     currentTemperature = kelvinToCelsius(currentTemperature);
-    temperatureDiv.textContent = "Current temperature: " + Math.round(currentTemperature) + "°C";
-
+    
     let feelsLike = weatherJson["main"]["feels_like"];
     feelsLike = kelvinToCelsius(feelsLike);
-    feelsLikeDiv.textContent = "Feels like: " + Math.round(feelsLike) + "°C";
+
+    if (units == "Celsius") {
+        temperatureDiv.textContent = "Current temperature: " + Math.round(currentTemperature) + "°C";
+        feelsLikeDiv.textContent = "Feels like: " + Math.round(feelsLike) + "°C";
+    } else {
+        temperatureDiv.textContent = "Current temperature: " + Math.round(celsiusToFahrenheit(currentTemperature)) + "°F";
+        feelsLikeDiv.textContent = "Feels like: " + Math.round(celsiusToFahrenheit(feelsLike)) + "°F";
+    };
 
     let weatherDescription = weatherJson["weather"][0]["main"];
     weatherDiv.textContent = "Condition: " + weatherDescription;
 
     let windDescription = weatherJson["wind"]["speed"];
-    windDiv.textContent = "Wind: " + windDescription + " MPH";
+    windDiv.textContent = "Wind: " + Math.round(windDescription) + " MPH";
 
     let humidityDescription = weatherJson["main"]["humidity"];
     humidityDiv.textContent = "Humidity: " + humidityDescription + "%";
     
+
     getWeatherGif(weatherDescription);
 };
 
@@ -45,7 +52,7 @@ const button = document.getElementById('search');
 button.addEventListener("click", (event) => {
     event.preventDefault();
     city = input.value;
-    retrieveTemperature(city);
+    retrieveTemperature(city, unitsButton.textContent);
 });
 let temperatureDiv = document.getElementById("temperature");
 let feelsLikeDiv = document.getElementById("feels-like");
@@ -54,9 +61,23 @@ let windDiv = document.getElementById("wind");
 let humidityDiv = document.getElementById("humidity");
 let weatherImg = document.getElementById("weather-gif");
 
+let unitsButton = document.getElementById("change-units");
+unitsButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    buttonText = unitsButton.textContent;
+    if (buttonText == "Fahrenheit") {
+        unitsButton.textContent = "Celsius";
+    } else {
+        unitsButton.textContent = "Fahrenheit"
+    };
+    retrieveTemperature(input.value, unitsButton.textContent);
+});
+
+
+
 const defaultCity = "Oceanside";
 input.value = defaultCity;
-retrieveTemperature(defaultCity);
+retrieveTemperature(defaultCity, unitsButton.textContent);
 
 
 function getWeatherGif(weather){
