@@ -5,20 +5,22 @@ async function retrieveTemperature(location) {
     let weatherJson = await currentWeather.json();
     console.log(weatherJson);
 
-    let currentTemperatureKelvin = weatherJson["main"]["temp"];
-    let currentTemperatureCelsius = kelvinToCelsius(currentTemperatureKelvin);
-    let currentTempDiv = document.createElement('div');
-    currentTempDiv.textContent = "Current temperature: " + Math.round(currentTemperatureCelsius) + "°C";
-    temperatureDiv.appendChild(currentTempDiv);
+    let currentTemperature = weatherJson["main"]["temp"];
+    currentTemperature = kelvinToCelsius(currentTemperature);
+    temperatureDiv.textContent = "Current temperature: " + Math.round(currentTemperature) + "°C";
 
-    let currentTemperatureKelvinFeelsLike = weatherJson["main"]["feels_like"];
-    let currentTemperatureCelsiusFeelsLike = kelvinToCelsius(currentTemperatureKelvinFeelsLike);
-    let currentTempFeelsLikeDiv = document.createElement('div');
-    currentTempFeelsLikeDiv.textContent = "Feels like: " + Math.round(currentTemperatureCelsiusFeelsLike) + "°C";
-    temperatureDiv.appendChild(currentTempFeelsLikeDiv);
+    let feelsLike = weatherJson["main"]["feels_like"];
+    feelsLike = kelvinToCelsius(feelsLike);
+    feelsLikeDiv.textContent = "Feels like: " + Math.round(feelsLike) + "°C";
 
-    weatherDescription = weatherJson["weather"][0]["main"];
-    weatherDiv.textContent = weatherDescription;
+    let weatherDescription = weatherJson["weather"][0]["main"];
+    weatherDiv.textContent = "Condition: " + weatherDescription;
+
+    let windDescription = weatherJson["wind"]["speed"];
+    windDiv.textContent = "Wind: " + windDescription + " MPH";
+
+    let humidityDescription = weatherJson["main"]["humidity"];
+    humidityDiv.textContent = "Humidity: " + humidityDescription + "%";
     
     getWeatherGif(weatherDescription);
 };
@@ -46,8 +48,11 @@ button.addEventListener("click", (event) => {
     retrieveTemperature(city);
 });
 let temperatureDiv = document.getElementById("temperature");
+let feelsLikeDiv = document.getElementById("feels-like");
 let weatherDiv = document.getElementById("weather");
-let weatherImg = document.getElementById("weather-gif")
+let windDiv = document.getElementById("wind");
+let humidityDiv = document.getElementById("humidity");
+let weatherImg = document.getElementById("weather-gif");
 
 const defaultCity = "Oceanside";
 input.value = defaultCity;
