@@ -1,8 +1,10 @@
 async function retrieveTemperature(location="London") {
-    let weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=0fbedc6a540b7697b79efc90cc2a0673`
-    let currentTemperature = await fetch(weatherUrl)
-    let weatherJson = await currentTemperature.json();
-    console.log(kelvinToCelsius(weatherJson["main"]["temp"]));
+    let locationUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=0fbedc6a540b7697b79efc90cc2a0673`
+    let currentWeather = await fetch(locationUrl)
+    let weatherJson = await currentWeather.json();
+    let currentTemperatureKelvin = weatherJson["main"]["temp"]
+    let currentTemperatureCelsius = kelvinToCelsius(currentTemperatureKelvin);
+    temperatureDiv.textContent = Math.round(currentTemperatureCelsius) + "°C";
 };
 
 function kelvinToCelsius(kelvin) {
@@ -20,10 +22,12 @@ function fahrenheitToCelsius(fahrenheit) {
     return celsius;
 }
 
+let temperatureDiv = document.getElementById("temperature");
+
 let input = document.getElementById("city-search");
 const button = document.getElementById('search');
 button.addEventListener("click", (event) => {
-    event.preventDefault()
+    event.preventDefault();
     city = input.value;
     retrieveTemperature(city);
 });
